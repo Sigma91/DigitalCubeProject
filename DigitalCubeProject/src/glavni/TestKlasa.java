@@ -22,12 +22,41 @@ import model.Tournament;
 public class TestKlasa {
 
 	public static void main(String[] args) throws ParseException {
-		
-Competitor c = new Competitor();
+
+List<Competitor> listaTakmicara = new ArrayList<Competitor>();
 		
 		try {
-			c = XmlMetode.parseCompetitorXML("event-11427861.xml");
-			System.out.println(c.getId() +  " " + c.getName() + " " + c.getShort_name() + " " + c.getCountry_code());
+			listaTakmicara = XmlMetode.parseCompetitorsXML("event-11427861.xml");
+			for(Competitor co: listaTakmicara) {
+				System.out.println(co.getName() + " " + co.getShort_name() + " " + co.getCountry_code());
+			
+			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List<Competitor> competitors = new ArrayList<Competitor>();
+		Competitor comp = new Competitor();
+		Competitor comp2 = new Competitor();
+		try {
+			competitors = XmlMetode.parseCompetitorsXML("event-11427861.xml");
+			for(Competitor c: competitors) {
+				System.out.println(c.getId() +  " " + c.getName() + " " +c.getCountry_code());
+			}
+			
+			comp = XmlMetode.dajMiGostujucegTakmicara("event-11427861.xml");
+			System.out.println("Gost: " + comp.getId() +  " " + comp.getName() + " " +comp.getCountry_code());
+			
+			comp2 = XmlMetode.dajMiDomacegTakmicara("event-11427861.xml");
+			System.out.println("Domacin: " + comp2.getId() +  " " + comp2.getName() + " " +comp2.getCountry_code());
+			
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,6 +115,28 @@ Category cat = new Category();
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
+		//HIBERNATE 
+		
+		SessionFactory factory = new Configuration()
+				 .configure()
+				 .buildSessionFactory();
+
+	Session sesija = factory.openSession();
+	sesija.beginTransaction();
+
+	try{
+		listaTakmicara = XmlMetode.parseCompetitorsXML("event-11427861.xml");
+		for(Competitor co: listaTakmicara) {
+			sesija.save(co);			
+		}		
+		System.out.println("Uspesan unos");
+		}catch (Exception e) {
+	sesija.getTransaction().rollback();
+	System.out.println("Ne uspesan unos");
+	}
+	sesija.close();
 		/*SessionFactory factory = new Configuration()
 				 .configure()
 				 .buildSessionFactory();

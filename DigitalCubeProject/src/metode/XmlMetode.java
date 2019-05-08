@@ -92,47 +92,92 @@ public class XmlMetode {
 	      return category;
 	   }
 	   
-	   public static Competitor parseCompetitorXML(String xmlFajl) throws ParserConfigurationException, SAXException, IOException
+	   public static List<Competitor> parseCompetitorsXML(String xmlFile) throws ParserConfigurationException, SAXException, IOException
 	   {
-	 
-	      Competitor competitor = new Competitor();
+	      //Initialize a list of competitors
+	      List<Competitor> competitors = new ArrayList<Competitor>();
+	      Competitor competitor = null;
 	       
 	      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	      DocumentBuilder builder = factory.newDocumentBuilder();
-	      Document document = builder.parse(new File(xmlFajl));
+	      Document document = builder.parse(new File(xmlFile));
 	      document.getDocumentElement().normalize();
-	      	 NodeList nList = document.getElementsByTagName("competitor");
-		         Node node = nList.item(0);
-		         if (node.getNodeType() == Node.ELEMENT_NODE)
-		         {
-		            Element eElement = (Element) node;
+	      NodeList nList = document.getElementsByTagName("competitor");
+	      for (int temp = 0; temp < nList.getLength(); temp++)
+	      {
+	         Node node = nList.item(temp);
+	         if (node.getNodeType() == Node.ELEMENT_NODE)
+	         {
+	            Element eElement = (Element) node;
+	            
+	            //Create new Competitor Object
+	            competitor = new Competitor();
+	            competitor.setId(eElement.getAttribute("id"));
+	            competitor.setName(eElement.getAttribute("name"));
+	            competitor.setCountry_code(eElement.getAttribute("country_code"));
+	            competitor.setShort_name(eElement.getAttribute("short_name"));
+	            //Add competitor to list
+	            competitors.add(competitor);
+	         }
+	      }
+	      return competitors;
+	   }
+	   
+	   public static Competitor dajMiGostujucegTakmicara(String xmlFile) throws ParserConfigurationException, SAXException, IOException
+	   {
+	     
+	      Competitor competitor = null;
+	       
+	      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	      DocumentBuilder builder = factory.newDocumentBuilder();
+	      Document document = builder.parse(new File(xmlFile));
+	      document.getDocumentElement().normalize();
+	      NodeList nList = document.getElementsByTagName("competitor");
+	      for (int temp = 0; temp < nList.getLength(); temp++)
+	      {
+	         Node node = nList.item(temp);
+	         if (node.getNodeType() == Node.ELEMENT_NODE)
+	         {
+	            Element eElement = (Element) node;
+	            
+	            if(eElement.getAttribute("qualifier").equals("away")) {
+		            //Create new Competitor Object
+		            competitor = new Competitor();
 		            competitor.setId(eElement.getAttribute("id"));
-		         }
-	         NodeList pList = document.getElementsByTagName("competitor");
-		         Node node1 = pList.item(0);
-		         if (node1.getNodeType() == Node.ELEMENT_NODE)
-		         {
-		            Element eElement = (Element) node1;
-		            competitor.setCountry_code(eElement.getAttribute("country_code"));
-		         }
-		     NodeList qList = document.getElementsByTagName("competitor");
-		         Node node2 = qList.item(0);
-		         if (node2.getNodeType() == Node.ELEMENT_NODE)
-		         {
-		            Element eElement = (Element) node2;
 		            competitor.setName(eElement.getAttribute("name"));
-		            		            	
-		            }		  	      
-		         
-		     NodeList sList = document.getElementsByTagName("competitor");
-		       Node node3 = sList.item(0);
-		         if (node3.getNodeType() == Node.ELEMENT_NODE)
-		         {
-		            Element eElement = (Element) node3;
-		            competitor.setShort_name(eElement.getAttribute("abbreviation"));
-		         }
-	         
-
+		            competitor.setCountry_code(eElement.getAttribute("country_code"));
+	            }
+	         }
+	      }
+	      return competitor;
+	   }
+	   
+	   public static Competitor dajMiDomacegTakmicara(String xmlFile) throws ParserConfigurationException, SAXException, IOException
+	   {
+	     
+	      Competitor competitor = null;
+	       
+	      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	      DocumentBuilder builder = factory.newDocumentBuilder();
+	      Document document = builder.parse(new File(xmlFile));
+	      document.getDocumentElement().normalize();
+	      NodeList nList = document.getElementsByTagName("competitor");
+	      for (int temp = 0; temp < nList.getLength(); temp++)
+	      {
+	         Node node = nList.item(temp);
+	         if (node.getNodeType() == Node.ELEMENT_NODE)
+	         {
+	            Element eElement = (Element) node;
+	            
+	            if(eElement.getAttribute("qualifier").equals("home")) {
+		            //Create new Competitor Object
+		            competitor = new Competitor();
+		            competitor.setId(eElement.getAttribute("id"));
+		            competitor.setName(eElement.getAttribute("name"));
+		            competitor.setCountry_code(eElement.getAttribute("country_code"));
+	            }
+	         }
+	      }
 	      return competitor;
 	   }
 	   public static Tournament parseTournamentXML(String xmlFajl) throws ParserConfigurationException, SAXException, IOException
@@ -193,9 +238,7 @@ public class XmlMetode {
 		            Element eElement = (Element) node1;
 		            event.setUtc_scheduled(eElement.getAttribute("scheduled"));
 		            
-		            Timestamp ts=new Timestamp(System.currentTimeMillis());  
-	                Date date=ts;  
-	                System.out.println(date);     
+		            
 		            /*String input = "2017-09-23T13:15:00+00:00" ;
 		            java.sql.Timestamp ts = java.sql.Timestamp.valueOf( input ) ;	*/            		            
 		                
@@ -205,5 +248,7 @@ public class XmlMetode {
 
 	      return event;
 	   }
+	   
+	   
 
 }
